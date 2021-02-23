@@ -6,7 +6,6 @@
  * Time: 18:39
  */
 
-
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -18,8 +17,9 @@ class HelloController
     /**
      * @Route("/hello/{prenom}", name="hello")
      */
-    public function hello($prenom)
+    public function hello($prenom = 'nizar')
     {
-        return new Response("Bonjour $prenom!");
+
+        return new Response("Bonjour $prenom !");
     }
 }
