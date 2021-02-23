@@ -9,15 +9,17 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
 
 class HelloController
 {
-
-
-    public function hello()
+    /**
+     * @Route("/hello/{prenom}", name="hello")
+     */
+    public function hello($prenom)
     {
-
-        var_dump("Home page");
-        die;
+        return new Response("Bonjour $prenom!");
     }
 }
