@@ -12,25 +12,15 @@
                     <span class="sr-only">(current)</span>
                 </a>
             </li>
-            {#<li class="nav-item">#}
-            {#<a class="nav-link" href="#">Features</a>#}
-            {#</li>#}
-            {#<li class="nav-item">#}
-            {#<a class="nav-link" href="#">Pricing</a>#}
-            {#</li>#}
-            {#<li class="nav-item">#}
-            {#<a class="nav-link" href="#">About</a>#}
-            {#</li>#}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
                    aria-expanded="false">Catégories</a>
                 <div class="dropdown-menu">
-                    {{ render(controller('App\\Controller\\CategoryController::getCategoryList')) }}
-                    {#<a class="dropdown-item" href="#">Action</a>#}
-                    {#<a class="dropdown-item" href="#">Another action</a>#}
-                    {#<a class="dropdown-item" href="#">Something else here</a>#}
-                    {#<div class="dropdown-divider"></div>#}
-                    {#<a class="dropdown-item" href="#">Separated link</a>#}
+                    {#{{ render(controller('App\\Controller\\CategoryController::getCategoryList')) }}#}
+                    {% for category in categoryRepository.findAll() %}
+                        <a class="dropdown-item"
+                           href="">{{ category.name }}</a>
+                    {% endfor %}
                 </div>
             </li>
         </ul>
