@@ -12,26 +12,32 @@ class CategoryController extends AbstractController
 
 
     protected $categoryRepository;
+
     public function __construct(CategoryRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function getCategoryList(){
+    public function getCategoryList()
+    {
 
         $category = $this->categoryRepository->findAll();
 
-        return $this->render("category/_list.html.twig", ['categoryList' =>$category]);
+        return $this->render("category/_list.html.twig", ['categoryList' => $category]);
     }
 
 
-//    /**
-//     * @Route("/category/{slug}", name="show_category")
-//     */
-//    public function show(): Response
-//    {
-//        return $this->render('category/show.html.twig', [
-//            'controller_name' => 'CategoryController',
-//        ]);
-//    }
+    /**
+     * @Route("/category/{slug}", name="category_show")
+     */
+    public function show($slug): Response
+    {
+        $category = $this->categoryRepository->findOneBy(['slug' => $slug]);
+
+        if (!$category) {
+            throw $this->createNotFoundException("La catégorie demandée n'existe pas");
+        }
+
+        return $this->render('category/show.html.twig', ['category' => $category]);
+    }
 }

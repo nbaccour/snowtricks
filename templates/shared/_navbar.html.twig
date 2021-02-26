@@ -19,7 +19,7 @@
                     {#{{ render(controller('App\\Controller\\CategoryController::getCategoryList')) }}#}
                     {% for category in categoryRepository.findAll() %}
                         <a class="dropdown-item"
-                           href="">{{ category.name }}</a>
+                           href="{{ path('category_show', {'slug':category.slug}) }}">{{ category.name }}</a>
                     {% endfor %}
                 </div>
             </li>

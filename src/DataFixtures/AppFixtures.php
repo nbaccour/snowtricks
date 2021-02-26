@@ -37,12 +37,16 @@ class AppFixtures extends Fixture
 
         $manager->persist($admin);
 
-        for ($u = 0; $u < 5; $u++) {
+
+        for ($u = 0; $u < 10; $u++) {
+            $gender = $faker->randomElement(['male', 'female']);
             $user = new User();
             $hash = $this->encoder->encodePassword($user, "password");
             $user->setEmail('user' . $u . '@gmail.com')
                 ->setNom($faker->firstName())
                 ->setPrenom($faker->lastName())
+                ->setPhoto('https://randomuser.me/api/portraits/' . ($gender === 'male' ? 'men/' : 'women/') . $faker->numberBetween(1,
+                        99) . '.jpg')
                 ->setPassword($hash);
 
             $manager->persist($user);
