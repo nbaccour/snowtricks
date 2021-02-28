@@ -4,6 +4,7 @@
 
 {% block body %}
     <h1>Connexion : </h1>
+    {% include "shared/_flashSuccess.html.twig" %}
     {{ form_start(formView) }}
     {{ form_widget(formView) }}
     <button type="submit" class="btn btn-success">Connexion</button>
