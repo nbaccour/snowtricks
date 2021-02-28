@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -48,6 +49,10 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $photo;
+    /**
+     * @Assert\EqualTo(propertyPath="password",message="Les 2 mots de passe doivent correspondre", groups={"verif-pwd"})
+     */
+    private $verifPassword;
 
     public function getId(): ?int
     {
@@ -162,6 +167,17 @@ class User implements UserInterface
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+    public function getVerifPassword(): ?string
+    {
+        return $this->verifPassword;
+    }
+
+    public function setVerifPassword(?string $verifPassword): self
+    {
+        $this->verifPassword = $verifPassword;
 
         return $this;
     }
