@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class SecurityController extends AbstractController
 {
@@ -30,6 +32,8 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+
 
             $password = $encoder->encodePassword($user, $user->getPassword());
 
@@ -57,8 +61,9 @@ class SecurityController extends AbstractController
     {
 
         $form = $this->createForm(LoginType::class, ['email' => $utils->getLastUsername()]);
+
         return $this->render('security/login.html.twig',
-            ['formView' => $form->createView(), 'error' => $utils->getLastAuthenticationError()]);
+            ['formView' => $form->createView(), 'error' => $utils->getLastAuthenticationError('message')]);
     }
 
     /**
