@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block body %}
+    <div class="card border-primary mb-3" style="max-width: 80rem;">
+        <div class="card-header">Mes données</div>
+        <div class="card-body">
+            <p class="card-text"><img src="{{ user.photo }}" class="img-fluid" alt="Image de {{ user.nom }}"></p>
+            <h4 class="card-title">{{ user.nom }} {{ user.prenom }}</h4>
+            <h4 class="card-title">{{ user.email }}</h4>
+
+            {{ form_start(formProfilView) }}
+            {#{{ form_widget(formProfilView) }}#}
+            {{ form_row(formProfilView.photo) }}
+
+            <button type="submit" class="btn btn-success">Modifier</button>
+            {{ form_end(formProfilView) }}
+            <hr>
+        </div>
+
+    </div>
+
+
+{% endblock %}
