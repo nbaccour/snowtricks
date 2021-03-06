@@ -28,18 +28,7 @@ class ProfileType extends AbstractType
                     'attr'        => ['placeholder' => 'Votre prénom'],
                     'constraints' => new Length(['min' => '3', 'max' => '255', 'minMessage' => 'Prénom Invalide']),
                 ])
-            ->add('photo', FileType::class,
-                [
-                    'label'       => 'Photo',
-                    'mapped'      => false,
-                    'required'    => false,
-                    'attr'        => ['placeholder' => 'Votre photo'],
-                    'constraints' => new File([
-                        'maxSize'          => '1024k',
-                        'mimeTypes'        => ['image/jpeg', 'image/jpg', 'image/png'],
-                        'mimeTypesMessage' => 'Le fichier ne possède pas une extension valide ! Veuillez insérer une image en .jpg, .jpeg ou .png',
-                    ]),
-                ]);
+        ;
 
     }
 

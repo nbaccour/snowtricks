@@ -3,6 +3,7 @@
 {% block title %}Mon compte{% endblock %}
 
 {% block body %}
+    {% include "shared/_flashSuccess.html.twig" %}
     <div class="card border-primary mb-3" style="max-width: 80rem;">
         <div class="card-header">Mes données</div>
         <div class="card-body">
@@ -10,13 +11,30 @@
             <h4 class="card-title">{{ user.nom }} {{ user.prenom }}</h4>
             <h4 class="card-title">{{ user.email }}</h4>
 
+        </div>
+
+    </div>
+    <div class="card border-primary mb-3" style="max-width: 80rem;">
+        <div class="card-header">Modifier ma photo</div>
+        <div class="card-body">
+
             {{ form_start(formProfilView) }}
             {#{{ form_widget(formProfilView) }}#}
             {{ form_row(formProfilView.photo) }}
 
             <button type="submit" class="btn btn-success">Modifier</button>
             {{ form_end(formProfilView) }}
-            <hr>
+        </div>
+
+    </div>
+    <div class="card border-primary mb-3" style="max-width: 80rem;">
+        <div class="card-header">Modifier mon Mot de passe</div>
+        <div class="card-body">
+
+            {{ form_start(formPassword) }}
+            {{ form_widget(formPassword) }}
+            <button type="submit" class="btn btn-success">Modifier</button>
+            {{ form_end(formPassword) }}
         </div>
 
     </div>

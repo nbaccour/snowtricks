@@ -31,14 +31,15 @@ class SecurityController extends AbstractController
         $form = $this->createForm(RegistrationType::class, $user, ['validation_groups' => 'verif-pwd']);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
 
+        if ($form->isSubmitted() && $form->isValid()) {
 
 
             $password = $encoder->encodePassword($user, $user->getPassword());
 
 
             $user->setPassword($password);
+            $user->setPhoto('uploads/user/avatar.png');
 
             $manager->persist($user);
             $manager->flush();
@@ -51,7 +52,8 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('security_login');
         }
 
-        return $this->render('security/registration.html.twig', ['formView' => $form->createView()]);
+        return $this->render('security/registration.html.twig',
+            ['formView' => $form->createView()]);
     }
 
     /**
