@@ -3,12 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(fields={"email"}, message="Mon message ")
  */
 class User implements UserInterface
 {
@@ -21,6 +25,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Email
      */
     private $email;
 
@@ -53,6 +58,16 @@ class User implements UserInterface
      * @Assert\EqualTo(propertyPath="password",message="Les 2 mots de passe doivent correspondre", groups={"verif-pwd"})
      */
     private $verifPassword;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Trick::class, mappedBy="user")
+     */
+    private $trick;
+
+    public function __construct()
+    {
+        $this->trick = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -180,6 +195,36 @@ class User implements UserInterface
     public function setVerifPassword(?string $verifPassword): self
     {
         $this->verifPassword = $verifPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getTrick(): Collection
+    {
+        return $this->trick;
+    }
+
+    public function addTrick(Trick $trick): self
+    {
+        if (!$this->trick->contains($trick)) {
+            $this->trick[] = $trick;
+            $trick->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrick(Trick $trick): self
+    {
+        if ($this->trick->removeElement($trick)) {
+            // set the owning side to null (unless already changed)
+            if ($trick->getUser() === $this) {
+                $trick->setUser(null);
+            }
+        }
 
         return $this;
     }
