@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Repository\CategoryRepository;
+use App\Entity\Image;
+use App\Repository\TrickRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,14 +32,18 @@ class CategoryController extends AbstractController
     /**
      * @Route("/category/{slug}", name="category_show")
      */
-    public function show($slug): Response
+    public function show($slug, TrickRepository $trickRepository): Response
     {
         $category = $this->categoryRepository->findOneBy(['slug' => $slug]);
 
         if (!$category) {
             throw $this->createNotFoundException("La catégorie demandée n'existe pas");
         }
+        $image = new Image();
+        $imageDir = $image->getUploadDir();
 
-        return $this->render('category/show.html.twig', ['category' => $category]);
+        $tricks = $trickRepository->findBy(['category' => $category]);
+        return $this->render('category/show.html.twig',
+            ['category' => $category, 'tricks' => $tricks, 'imageDir' => $imageDir]);
     }
 }

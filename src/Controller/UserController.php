@@ -24,7 +24,6 @@ class UserController extends AbstractController
     public function profile(Request $request, EntityManagerInterface $manager, SluggerInterface $slugger)
     {
         $user = $this->getUser();
-//        dump($user);
         $formPicture = $this->createForm(PictureType::class, $user);
         $formPicture->handleRequest($request);
 

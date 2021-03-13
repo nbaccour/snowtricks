@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création figure{% endblock %}
+
+{% block body %}
+
+    <h1> Ajouter un figure</h1>
+    {{ form_start(formView) }}
+    {{ form_widget(formView) }}
+    {#{{ dump(formView.image) }}#}
+    {# The Prototype to use for generating items of the Folder.documents collection #}
+
+    {#<div id="filesProto" data-prototype="{{ form_widget(formView.image.vars.prototype)|e }}"></div>#}
+
+    {# An empty (fro now) div which will later hold the generated document fields #}
+    {#<div class="row">#}
+        {#<div class="col col-xs-12" id="filesBox">#}
+        {#</div>#}
+    {#</div>#}
+
+    <button type="submit" class="btn btn-success">Ajouter</button>
+    {{ form_end(formView) }}
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+
+        // Keep count of how many elements have been added
+        var fileCount = '{{ formView.image|length }}';
+        console.log(fileCount);
+        console.log('test');
+        var removeButton = "<button type='button' class='btn btn-danger btn-xs' onclick='removeFile($(this));'><i class='fa fa-times' aria-hidden='true'></i></button>";
+
+        function removeFile(ob) {
+            ob.parent().parent().remove();
+        }
+
+        function createAddFile(fileCount) {
+            // grab the prototype template
+            var newWidget = $("#filesProto").attr('data-prototype');
+            // replace the "__name__" used in the id and name of the prototype
+            newWidget = newWidget.replace(/__name__/g, fileCount);
+
+            $("#filesBox").append("<div class='row'>" + "<div class='col-md-1'>" + removeButton + "</div><div class='col-md-10'>" + newWidget + "</div></div>");
+
+            // Once the file is added
+            $('#playground_cookiejarbundle_folder_documents_' + fileCount + '_file').on('change', function () {
+                // Create another instance of add file button and company
+                createAddFile(parseInt(fileCount) + 1);
+            });
+        }
+
+        $(document).ready(function () {
+            createAddFile(fileCount);
+            fileCount++;
+        });
+
+    </script>
+{% endblock %}
+

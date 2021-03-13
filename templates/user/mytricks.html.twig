@@ -1,24 +1,26 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}
-    Page d'accueil
+    Mes figures
 {% endblock %}
-
 {% block body %}
-    <h1>Top Tricks</h1>
-    <div class="row">
 
+    <h1>Mes Figures : </h1>
+    <div class="row">
+        <a href="{{ path('trick_create') }}" class="btn btn-success">Ajouter une Figure</a>
+    </div>
+    <div class="row">
         {% for trick in tricks %}
-            <div class="col-4">
+            <div class="col-3">
                 <div class="card">
                     <img src="{{ imageDir }}{{ trick.mainImage.name }}{{ trick.mainImage.extension }}" class="img-fluid" alt="trick">
-
                     <div class="card-body">
                         <h4 class="card-title">{{ trick.name }}</h4>
                         <span class="badge badge-info">{{ trick.category.name }}</span>
                         <p class="card-text">{{ trick.description }}</p>
-                        <a href="{{ path('trick_show', {'category_slug':trick.category.slug, 'slug':trick.slug}) }}"
-                           class="btn btn-primary btn-sm">Détails</a>
+                        <a href="{{ path('trick_modify', {'id':trick.id}) }}"
+                           class="btn btn-success btn-sm">Modifier</a>
+                        <a href="{{ path('trick_delete', {'id':trick.id}) }}"
+                           class="btn btn-danger btn-sm">Supprimer</a>
                     </div>
                 </div>
             </div>
