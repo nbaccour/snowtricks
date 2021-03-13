@@ -50,6 +50,7 @@ class Trick
      */
     private $image;
 
+
     /**
      * @ORM\OneToOne(targetEntity=Image::class, cascade={"persist", "remove"})
      */

@@ -69,30 +69,33 @@ class AppFixtures extends Fixture
         }
         $tricksName = ['Mute', 'Indy', '360', '720', 'Backflip', 'Misty', 'Tail slide', 'Method air', 'Backside air'];
 
-        foreach ($tricksName as $name) {
+        foreach ($aCategory as $categorie) {
+            for ($i = 0; $i <= mt_rand(5, 15); $i++) {
 
-            $trick = new Trick();
-            $trick->setName($name)
-                ->setDescription($faker->paragraph(5))
-                ->setSlug(strtolower($this->slugger->slug($trick->getName())))
-                ->setUser($faker->randomElement($aUser))
-                ->setCategory($faker->randomElement($aCategory));
+                $trick = new Trick();
+                $trick->setName($faker->randomElement($tricksName))
+                    ->setDescription($faker->paragraph(5))
+                    ->setSlug(strtolower($this->slugger->slug($trick->getName())))
+                    ->setUser($faker->randomElement($aUser))
+                    ->setCategory($categorie);
 
-            $aImage = [];
-            // 3 Image by Trick
-            for ($k = 1; $k < 4; $k++) {
-                $image = new Image();
-                $image->setName('uploads/trick/img' . $faker->numberBetween(1, 39) . '.jpg')
-                    ->setTrick($trick);
+                $aImage = [];
+                // 3 Image by Trick
+                for ($k = 1; $k < 4; $k++) {
+                    $image = new Image();
+//                    $image->setName('uploads/trick/img' . $faker->numberBetween(1, 39))
+                    $image->setName('img' . $faker->numberBetween(1, 39))
+                        ->setExtension('.jpg')
+                        ->setTrick($trick);
 
-                $manager->persist($image);
-                $aImage[] = $image;
+                    $manager->persist($image);
+                    $aImage[] = $image;
+                }
+
+                $trick->setMainImage($faker->randomElement($aImage));
+                $manager->persist($trick);
+
             }
-
-            $trick->setMainImage($faker->randomElement($aImage));
-//            $manager->persist($trick);
-            $manager->persist($trick);
-
         }
 
 
