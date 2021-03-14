@@ -84,8 +84,7 @@ class AppFixtures extends Fixture
                 for ($k = 1; $k < 4; $k++) {
                     $image = new Image();
 //                    $image->setName('uploads/trick/img' . $faker->numberBetween(1, 39))
-                    $image->setName('img' . $faker->numberBetween(1, 39))
-                        ->setExtension('.jpg')
+                    $image->setName('img' . $faker->numberBetween(1, 39) . '.jpg')
                         ->setTrick($trick);
 
                     $manager->persist($image);
