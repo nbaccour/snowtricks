@@ -35,7 +35,7 @@ class UserController extends AbstractController
                 $safeFilename = $slugger->slug($originalFilename);
 //                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
                 $newFilename = 'uploads/user/' . $safeFilename . '.' . $photoFile->guessExtension();
-
+//                dd($photoFile);
                 try {
                     $photoFile->move(
 //                        $this->getParameter('uploads/user'),
