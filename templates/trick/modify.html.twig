@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier figure{% endblock %}
+
+{% block body %}
+    {% include "shared/_flashSuccess.html.twig" %}
+    <h1> Modifier la figure</h1>
+
+    {{ form_start(formView) }}
+    {{ form_widget(formView) }}
+
+    {# Si la route est "trick_create on affiche les images #}
+    {% if app.request.attributes.get('_route') == 'trick_modify' %}
+        {#<h2>Images</h2>#}
+        <div class="row">
+            {% for img in trick.image %}
+                <div class="col-4">
+                    <div class="card">
+                        <img src="/{{ trickDir }}{{ img.name }}" class="img-fluid" alt="trick">
+                        <a href="{{ path('trick_delte_picture', {id: img.id}) }}" data-delete
+                           data-token="{{ csrf_token('delete' ~ img.id ) }}">Supprimer</a>
+                        <div class="card-body">
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <button type="submit" class="btn btn-success">Modifier</button>
+    {{ form_end(formView) }}
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('#trick_image').on('change', function () {
+            files = $(this)[0].files;
+
+            name = '';
+            for (var i = 0; i < files.length; i++) {
+                name += '\"' + files[i].name + '\"' + (i != files.length - 1 ? ", " : "");
+            }
+            $(".custom-file-label").html(name);
+        });
+    </script>
+    <script>
+
+        window.onload = () => {
+            // Gestion des boutons "Supprimer"
+            let links = document.querySelectorAll("[data-delete]")
+
+            // On boucle sur links
+            for (link of links) {
+                // On écoute le clic
+                link.addEventListener("click", function (e) {
+                    // On empêche la navigation
+                    e.preventDefault()
+
+                    // On demande confirmation
+                    if (confirm("Voulez-vous supprimer cette image ?")) {
+                        // On envoie une requête Ajax vers le href du lien avec la méthode DELETE
+                        fetch(this.getAttribute("href"), {
+                            method: "DELETE",
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest",
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({"_token": this.dataset.token})
+                        }).then(
+                            // On récupère la réponse en JSON
+                            response => response.json()
+                        ).then(data => {
+                            if (data.success)
+                                this.parentElement.remove()
+                            else
+                                alert(data.error)
+                        }).catch(e => alert(e))
+                    }
+                })
+            }
+        }
+    </script>
+{% endblock %}
+

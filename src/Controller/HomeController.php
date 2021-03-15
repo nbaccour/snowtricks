@@ -11,6 +11,7 @@ namespace App\Controller;
 
 use App\Entity\Image;
 use App\Entity\Trick;
+use App\Repository\ImageRepository;
 use App\Repository\TrickRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,15 +22,17 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="homepage")
      */
-    public function homepage(TrickRepository $trickRepository)
+    public function homepage(TrickRepository $trickRepository, ImageRepository $imageRepository)
     {
 
 
         $tricks = $trickRepository->findBy([], [], 6);
-        $image = new Image();
-        $imageDir = $image->getUploadDir();
 
-
-        return $this->render("home.html.twig", ['tricks' => $tricks, 'imageDir' => $imageDir]);
+//        foreach ($tricks as $trick) {
+//
+//            $image = $imageRepository->find($trick);
+//            $trick->imageName = $image->getName();
+//        }
+        return $this->render("home.html.twig", ['tricks' => $tricks]);
     }
 }

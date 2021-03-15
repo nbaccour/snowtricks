@@ -3,7 +3,8 @@
     Mes figures
 {% endblock %}
 {% block body %}
-
+    {% include "shared/_flashWarning.html.twig" %}
+    {% include "shared/_flashSuccess.html.twig" %}
     <h1>Mes Figures : </h1>
     <div class="row">
         <a href="{{ path('trick_create') }}" class="btn btn-success">Ajouter une Figure</a>
@@ -12,7 +13,7 @@
         {% for trick in tricks %}
             <div class="col-3">
                 <div class="card">
-                    <img src="{{ imageDir }}{{ trick.mainImage.name }}" class="img-fluid" alt="trick">
+                    <img src="{{ trickDir }}{{ trick.mainImage.name }}" class="img-fluid" alt="trick">
                     <div class="card-body">
                         <h4 class="card-title">{{ trick.name }}</h4>
                         <span class="badge badge-info">{{ trick.category.name }}</span>

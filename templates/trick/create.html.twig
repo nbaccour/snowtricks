@@ -6,44 +6,44 @@
     {% include "shared/_flashSuccess.html.twig" %}
     <h1> Ajouter un figure</h1>
 
-
     {{ form_start(formView) }}
     {{ form_widget(formView) }}
 
     {# Si la route est "trick_create on affiche les images #}
     {% if app.request.attributes.get('_route') == 'trick_create' %}
-        <h2>Images</h2>
-        {% for img in trick.image %}
-            <div>
-                <img src="{{ img.name }}" alt="" width="150">
+        {#<h2>Images</h2>#}
+        <div class="row">
+            {% for img in trick.image %}
+                <div class="col-4">
+                    <div class="card">
+                        <img src="{{ trickDir }}{{ img.name }}" class="img-fluid" alt="trick">
 
-                {# On ajoute un lien permettant de supprimer une image (sera géré en Ajax) #}
-                {#<a href="{{ path('annonces_delete_image', {id: image.id})}}" data-delete data-token="{{ csrf_token('delete' ~ image.id )}}">Supprimer</a>#}
-            </div>
-        {% endfor %}
+                        <div class="card-body">
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
     <button type="submit" class="btn btn-success">Ajouter</button>
     {{ form_end(formView) }}
 
-    {#{{ form_start(formView) }}#}
-    {#{{ form_widget(formView) }}#}
-    {#{{ dump(formView.image) }}#}
-    {# The Prototype to use for generating items of the Folder.documents collection #}
-    {#{{ form_row(formView.image) }}#}
-    {#<div id="filesProto" data-prototype="{{ form_widget(formView.image.vars.prototype)|e }}"></div>#}
-
-    {# An empty (fro now) div which will later hold the generated document fields #}
-    {#<div class="row">#}
-    {#<div class="col col-xs-12" id="filesBox">#}
-    {#</div>#}
-    {#</div>#}
-
-    {#<button type="submit" class="btn btn-success">Ajouter</button>#}
-    {#{{ form_end(formView) }}#}
 
 {% endblock %}
 
 {% block javascripts %}
-    {#<script src="{{ asset('js/deletepicture.js') }}"></script>#}
+    {{ parent() }}
+    <script>
+        $('#trick_image').on('change', function () {
+            files = $(this)[0].files;
+
+            name = '';
+            for (var i = 0; i < files.length; i++) {
+                name += '\"' + files[i].name + '\"' + (i != files.length - 1 ? ", " : "");
+            }
+            $(".custom-file-label").html(name);
+        });
+    </script>
 {% endblock %}
 
