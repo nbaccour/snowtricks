@@ -6,6 +6,7 @@ use App\Entity\Trick;
 use App\Entity\Image;
 use App\Form\TrickType;
 use App\Repository\TrickRepository;
+use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -20,11 +21,16 @@ class TrickController extends AbstractController
 
     protected $trickRepository;
     protected $manager;
+    protected $slugger;
 
-    public function __construct(TrickRepository $trickRepository, EntityManagerInterface $manager)
-    {
+    public function __construct(
+        TrickRepository $trickRepository,
+        EntityManagerInterface $manager,
+        SluggerInterface $slugger
+    ) {
         $this->trickRepository = $trickRepository;
         $this->manager = $manager;
+        $this->slugger = $slugger;
     }
 
 
@@ -53,21 +59,22 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/createtrick", name="trick_create")
+     * @param $form
+     * @param $trick
+     * @param string $type
+     * @return bool
      */
-    public function create(Request $request, SluggerInterface $slugger)
+    public function createOrUpdate($form, $trick, string $type = 'create')
     {
-        $trick = new Trick();
-        $user = $this->getUser();
-        $form = $this->createForm(TrickType::class, $trick);
 
-        $form->handleRequest($request);
+        $user = $this->getUser();
+        $return = false;
         if ($form->isSubmitted() && $form->isValid()) {
 
             $images = $form->get('image')->getData();
             foreach ($images as $image) {
                 $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
+                $safeFilename = $this->slugger->slug($originalFilename);
 
                 $bddFilename = $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
 //                $pathFilename = 'uploads/trick/' . $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
@@ -96,13 +103,33 @@ class TrickController extends AbstractController
                 $this->manager->persist($img);
 
             }
-            $trick->setSlug($slugger->slug($trick->getName()))
+            $trick->setSlug($this->slugger->slug($trick->getName()))
                 ->setUser($user);
 
             $this->manager->persist($trick);
 
             $this->manager->flush();
-            $this->addFlash('success', "Votre figure a été ajoutée");
+            $msg = ($type === 'create') ? "Votre figure a été ajoutée" : "Votre figure a été modifiée";
+            $this->addFlash('success', $msg);
+            $return = true;
+//            return $this->redirectToRoute("trick_mytricks");
+        }
+        return $return;
+    }
+
+    /**
+     * @Route("/createtrick", name="trick_create")
+     */
+    public function create(Request $request, SluggerInterface $slugger)
+    {
+        $trick = new Trick();
+        $form = $this->createForm(TrickType::class, $trick);
+
+        $form->handleRequest($request);
+
+        $create = $this->createOrUpdate($form, $trick);
+        if ($create === true) {
+            return $this->redirectToRoute("trick_mytricks");
         }
 
 
@@ -112,11 +139,34 @@ class TrickController extends AbstractController
     /**
      * @Route("/modifymytrick/{id}", name="trick_modify")
      */
-    public function modify($id)
+    public function modify($id, Request $request)
     {
-        dd('modify');
+        $trick = $this->trickRepository->find($id);
+
+        if (!$trick) {
+            throw $this->createNotFoundException("La figure $id n'existe pas");
+        }
+        $form = $this->createForm(TrickType::class, $trick);
+        $form->handleRequest($request);
+
+        $modify = $this->createOrUpdate($form, $trick, 'modify');
+        if ($modify === true) {
+            return $this->redirectToRoute("trick_mytricks");
+        }
+
+
+        return $this->render('/trick/modify.html.twig', ['formView' => $form->createView(), 'trick' => $trick]);
+
+
     }
 
+    /**
+     * @Route("/deletepicturetrick/{id}", name="trick_delte_picture")
+     */
+    public function deletePicture()
+    {
+        dd('delete image');
+    }
 
     /**
      * @Route("/deletemytrick/{id}", name="trick_delete", requirements={"id": "\d+"})
@@ -129,11 +179,20 @@ class TrickController extends AbstractController
             throw $this->createNotFoundException("La figure $id n'existe pas");
         }
 
-        $fileSystem = new Filesystem();
+        $filesystem = new Filesystem();
 
-        foreach($trick->getImage() as $image)
-        {
-            $fileSystem->remove('/uploads/trick/' . $image->getName());
+        foreach ($trick->getImage() as $image) {
+
+
+            try {
+                $filesystem->remove('/uploads/trick/' . $image->getName());
+
+            } catch (IOExceptionInterface $exception) {
+                $this->addFlash(
+                    'warning',
+                    "Erreur sur la suppression de la photo"
+                );
+            }
         }
         $imagesTrick = $trick->getImage();
 
@@ -141,24 +200,12 @@ class TrickController extends AbstractController
             $this->manager->remove($image);
 
         }
-//dd($trick->getImage());
-//        $this->manager->remove($trick);
+        $this->manager->remove($trick);
         $this->manager->flush();
 
-        $this->addFlash("success", "La figure a bien été suprimée ");
+        $this->addFlash("warning", "La figure a bien été suprimée ");
 
-        return $this->redirectToRoute("mytricks");
+        return $this->redirectToRoute("trick_mytricks");
     }
 
-//    /**
-//     * @param int $id
-//     */
-//    public function remove(int $id)
-//    {
-//        $cart = $this->getCart();
-//
-//        unset($cart[$id]);
-//
-//        $this->saveCart($cart);
-//    }
 }

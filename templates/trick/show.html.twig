@@ -23,6 +23,16 @@
             <p> {{ trick.description }}</p>
         </div>
     </div>
+    <div class="row">
+        {% for img in trick.image %}
+            <div class="col-4">
+                <div class="card">
+                    <img src="/{{ trickDir }}{{ img.name }}" class="img-fluid" alt="trick">
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
     {#<div class="row mx-auto pt-5 pb-5">#}
     {#<div class="col-md-8 ml-auto mr-auto">#}
     {#{% if app.user %}#}

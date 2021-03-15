@@ -23,8 +23,10 @@ class Image
      */
     private $name;
 
+    
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="image")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $trick;
 
