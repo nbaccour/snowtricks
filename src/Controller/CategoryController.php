@@ -39,11 +39,10 @@ class CategoryController extends AbstractController
         if (!$category) {
             throw $this->createNotFoundException("La catégorie demandée n'existe pas");
         }
-        $image = new Image();
-        $imageDir = $image->getUploadDir();
+
 
         $tricks = $trickRepository->findBy(['category' => $category]);
         return $this->render('category/show.html.twig',
-            ['category' => $category, 'tricks' => $tricks, 'imageDir' => $imageDir]);
+            ['category' => $category, 'tricks' => $tricks]);
     }
 }

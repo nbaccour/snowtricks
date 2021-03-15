@@ -50,9 +50,9 @@ class Trick
      */
     private $image;
 
-
     /**
      * @ORM\OneToOne(targetEntity=Image::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $mainImage;
 
@@ -158,12 +158,13 @@ class Trick
         return $this;
     }
 
+
     public function getMainImage(): ?Image
     {
         return $this->mainImage;
     }
 
-    public function setMainImage(?Image $mainImage): self
+    public function setMainImage(Image $mainImage): self
     {
         $this->mainImage = $mainImage;
 
