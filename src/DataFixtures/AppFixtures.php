@@ -93,11 +93,12 @@ class AppFixtures extends Fixture
                 }
 
                 // 10 comment by Trick
-                for ($c = 1; $c <= 4; $c++) {
+                for ($c = 1; $c <= mt_rand(7, 15); $c++) {
                     $comment = new Comment();
                     $comment->setMessage($faker->paragraph(5))
                         ->setTrick($trick)
                         ->setUser($faker->randomElement($aUser))
+                        ->setIsvalid(1)
                         ->setCreateDate($faker->dateTimeBetween('-6 months'));
 
                     $manager->persist($comment);

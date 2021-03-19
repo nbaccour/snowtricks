@@ -5,6 +5,7 @@ twig:
   globals:
     categoryRepository: "@App\\Repository\\CategoryRepository"
     trickDir: "uploads/trick/"
+    userDir: "uploads/user/"
 knp_paginator:
   template:
   #    pagination: '@KnpPaginator/Pagination/sliding.html.twig'     # sliding pagination controls template

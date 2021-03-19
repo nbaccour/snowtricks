@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\LoginType;
 use App\Form\RegistrationType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,8 @@ class SecurityController extends AbstractController
     public function registration(
         Request $request,
         EntityManagerInterface $manager,
-        UserPasswordEncoderInterface $encoder
+        UserPasswordEncoderInterface $encoder,
+        UserRepository $userRepository
     ) {
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user, ['validation_groups' => 'verif-pwd']);
@@ -34,6 +36,12 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $emailUser = $userRepository->findByEmail($user->getEmail());
+            if (count($emailUser) !== 0) {
+                $this->addFlash("warning",
+                    "Erreur : Email existe : '" . $user->getEmail() . "' ");
+                return $this->redirectToRoute("security_registration");
+            }
 
             $password = $encoder->encodePassword($user, $user->getPassword());
 

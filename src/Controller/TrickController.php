@@ -2,13 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Entity\Image;
+use App\Form\CommentType;
 use App\Form\TrickType;
+use App\Repository\CommentRepository;
 use App\Repository\ImageRepository;
 use App\Repository\TrickRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class TrickController extends AbstractController
@@ -26,29 +31,61 @@ class TrickController extends AbstractController
     protected $imageRepository;
     protected $manager;
     protected $slugger;
+    protected $commentRepository;
 
     public function __construct(
         TrickRepository $trickRepository,
         EntityManagerInterface $manager,
         SluggerInterface $slugger,
-        ImageRepository $imageRepository
+        ImageRepository $imageRepository,
+        CommentRepository $commentRepository
     ) {
         $this->trickRepository = $trickRepository;
         $this->manager = $manager;
         $this->slugger = $slugger;
         $this->imageRepository = $imageRepository;
+        $this->commentRepository = $commentRepository;
     }
 
+    /**
+     * @Route("/createtrick", name="trick_create")
+     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos figures")
+     */
+    public function create(Request $request, SluggerInterface $slugger)
+    {
+        $trick = new Trick();
+        $form = $this->createForm(TrickType::class, $trick);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $trickName = $this->trickRepository->findByName($trick->getName());
+            if (count($trickName) !== 0) {
+                $this->addFlash("warning",
+                    "Veuillez modifier le nom de la figure : '" . $trick->getName() . "' Ce Nom existe déjà dans la base");
+                return $this->redirectToRoute("trick_create");
+            }
+        }
+
+
+        $create = $this->createOrUpdate($form, $trick);
+        if ($create === true) {
+            return $this->redirectToRoute("trick_mytricks");
+        }
+
+
+        return $this->render('/trick/create.html.twig', ['formView' => $form->createView(), 'trick' => $trick]);
+    }
 
     /**
      * @Route("/{category_slug}/{slug}", name="trick_show", priority=-1)
      */
-    public function show($slug): Response
+    public function show($slug, PaginatorInterface $paginator, Request $request): Response
     {
-
+        $user = $this->getUser();
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
-
-        $imagesTrick = $this->imageRepository->findByExampleField($trick->getId());
+//        dd($trick);
+        $imagesTrick = $this->imageRepository->findByTrick($trick->getId());
         $oListImage = [];
         foreach ($imagesTrick as $key => $value) {
             if ($value->getId() !== $trick->getMainImage()->getId()) {
@@ -56,7 +93,37 @@ class TrickController extends AbstractController
             }
         }
 
-        return $this->render('trick/show.html.twig', ['trick' => $trick, 'images' => $oListImage]);
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $comment->setUser($user)
+                ->setTrick($trick)
+                ->setCreateDate(new \DateTime())
+                ->setIsvalid(1);
+
+            $this->manager->persist($comment);
+            $this->manager->flush();
+        }
+
+
+        $comments = $this->commentRepository->findByTrick($trick->getId());
+
+        $commentslist = $paginator->paginate(
+            $comments, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            6 // Nombre de résultats par page
+        );
+
+        return $this->render('trick/show.html.twig',
+            [
+                'trick'    => $trick,
+                'images'   => $oListImage,
+                'comments' => $commentslist,
+                'formView' => $form->createView(),
+            ]);
     }
 
     /**
@@ -92,6 +159,7 @@ class TrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $images = $form->get('image')->getData();
+
             foreach ($images as $image) {
                 $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $this->slugger->slug($originalFilename);
@@ -131,31 +199,12 @@ class TrickController extends AbstractController
             $this->manager->flush();
             $msg = ($type === 'create') ? "Votre figure a été ajoutée" : "Votre figure a été modifiée";
             $this->addFlash('success', $msg);
+
             $return = true;
-//            return $this->redirectToRoute("trick_mytricks");
         }
         return $return;
     }
 
-    /**
-     * @Route("/createtrick", name="trick_create")
-     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos figures")
-     */
-    public function create(Request $request, SluggerInterface $slugger)
-    {
-        $trick = new Trick();
-        $form = $this->createForm(TrickType::class, $trick);
-
-        $form->handleRequest($request);
-
-        $create = $this->createOrUpdate($form, $trick);
-        if ($create === true) {
-            return $this->redirectToRoute("trick_mytricks");
-        }
-
-
-        return $this->render('/trick/create.html.twig', ['formView' => $form->createView(), 'trick' => $trick]);
-    }
 
     /**
      * @Route("/modifymytrick/{id}", name="trick_modify")

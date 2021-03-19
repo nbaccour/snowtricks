@@ -37,6 +37,11 @@ class Comment
      */
     private $trick;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $isvalid;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,6 +91,18 @@ class Comment
     public function setTrick(?Trick $trick): self
     {
         $this->trick = $trick;
+
+        return $this;
+    }
+
+    public function getIsvalid(): ?int
+    {
+        return $this->isvalid;
+    }
+
+    public function setIsvalid(?int $isvalid): self
+    {
+        $this->isvalid = $isvalid;
 
         return $this;
     }
