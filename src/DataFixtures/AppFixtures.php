@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Comment;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\User;
@@ -80,7 +81,7 @@ class AppFixtures extends Fixture
                     ->setCategory($categorie);
 
                 $aImage = [];
-                // 3 Image by Trick
+                // 4 Image by Trick
                 for ($k = 1; $k <= 4; $k++) {
                     $image = new Image();
 //                    $image->setName('uploads/trick/img' . $faker->numberBetween(1, 39))
@@ -89,6 +90,17 @@ class AppFixtures extends Fixture
 
                     $manager->persist($image);
                     $aImage[] = $image;
+                }
+
+                // 10 comment by Trick
+                for ($c = 1; $c <= 4; $c++) {
+                    $comment = new Comment();
+                    $comment->setMessage($faker->paragraph(5))
+                        ->setTrick($trick)
+                        ->setUser($faker->randomElement($aUser))
+                        ->setCreateDate($faker->dateTimeBetween('-6 months'));
+
+                    $manager->persist($comment);
                 }
 
                 $trick->setMainImage($faker->randomElement($aImage));
