@@ -22,7 +22,7 @@ class ImageRepository extends ServiceEntityRepository
     /**
      * @return Image[] Returns an array of Image objects
      */
-    public function findByExampleField($value)
+    public function findByTrick($value)
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.trick = :val')
