@@ -36,7 +36,7 @@ class TrickType extends AbstractType
                 ])
             ->add('image', FileType::class,
                 [
-                    'label'    => 'Ajouter Une à trois images pour la figure',
+                    'label'    => 'Ajouter Une à quatre images pour la figure',
                     'multiple' => true,
                     'mapped'   => false,
                     'required' => false,

@@ -13,6 +13,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.8",
         "fzaninotto/faker": "^1.9",
+        "knplabs/knp-paginator-bundle": "^5.4",
         "sensio/framework-extra-bundle": "^6.1",
         "symfony/console": "5.2.*",
         "symfony/debug-bundle": "5.2.*",

@@ -26,7 +26,7 @@
         </ul>
         <ul class="navbar-nav">
             {% if app.user is not null %}
-                <li class="nav-item"><a href="" class="nav-link">{{ app.user.nom }}</a></li>
+                <li class="nav-item"><a href="" class="nav-link">Bienvenue {{ app.user.nom }}</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
                        aria-haspopup="true"
@@ -36,6 +36,9 @@
                         <a class="dropdown-item" href="{{ path("trick_mytricks") }}">Mes Figures</a>
                     </div>
                 </li>
+                <li class="nav-item"><a href="{{ path('trick_create') }}" class="btn btn-success">Ajouter une Figure</a>
+                </li>
+                <li>&nbsp;</li>
                 <li class="nav-item"><a href="{{ path('security_logout') }}" class="btn btn-danger">Déconnexion</a></li>
 
             {% else %}

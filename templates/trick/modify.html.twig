@@ -4,6 +4,7 @@
 
 {% block body %}
     {% include "shared/_flashSuccess.html.twig" %}
+    {% include "shared/_flashWarning.html.twig" %}
     <h1> Modifier la figure</h1>
 
     {{ form_start(formView) }}
@@ -13,21 +14,19 @@
     {% if app.request.attributes.get('_route') == 'trick_modify' %}
         {#<h2>Images</h2>#}
         <div class="row">
-            {% for img in trick.image %}
-                <div class="col-4">
-                    <div class="card">
-                        <img src="/{{ trickDir }}{{ img.name }}" class="img-fluid" alt="trick">
-                        <a href="{{ path('trick_delte_picture', {id: img.id}) }}" data-delete
-                           data-token="{{ csrf_token('delete' ~ img.id ) }}">Supprimer</a>
-                        <div class="card-body">
-
-                        </div>
+            {#{% for img in trick.image %}#}
+            {% for img in images %}
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="../{{ trickDir }}{{ img.name }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ img.name }}</h5>
+                        <a href="{{ path('trick_delete_picture', {id: img.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% endif %}
-    <button type="submit" class="btn btn-success">Modifier</button>
+    <button type="submit" class="btn btn-success">Modifier les données de la figure</button>
     {{ form_end(formView) }}
 
 
@@ -46,42 +45,42 @@
             $(".custom-file-label").html(name);
         });
     </script>
-    <script>
+    {#<script>#}
 
-        window.onload = () => {
-            // Gestion des boutons "Supprimer"
-            let links = document.querySelectorAll("[data-delete]")
+    {#window.onload = () => {#}
+    {#// Gestion des boutons "Supprimer"#}
+    {#let links = document.querySelectorAll("[data-delete]")#}
 
-            // On boucle sur links
-            for (link of links) {
-                // On écoute le clic
-                link.addEventListener("click", function (e) {
-                    // On empêche la navigation
-                    e.preventDefault()
+    {#// On boucle sur links#}
+    {#for (link of links) {#}
+    {#// On écoute le clic#}
+    {#link.addEventListener("click", function (e) {#}
+    {#// On empêche la navigation#}
+    {#e.preventDefault()#}
 
-                    // On demande confirmation
-                    if (confirm("Voulez-vous supprimer cette image ?")) {
-                        // On envoie une requête Ajax vers le href du lien avec la méthode DELETE
-                        fetch(this.getAttribute("href"), {
-                            method: "DELETE",
-                            headers: {
-                                "X-Requested-With": "XMLHttpRequest",
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({"_token": this.dataset.token})
-                        }).then(
-                            // On récupère la réponse en JSON
-                            response => response.json()
-                        ).then(data => {
-                            if (data.success)
-                                this.parentElement.remove()
-                            else
-                                alert(data.error)
-                        }).catch(e => alert(e))
-                    }
-                })
-            }
-        }
-    </script>
+    {#// On demande confirmation#}
+    {#if (confirm("Voulez-vous supprimer cette image ?")) {#}
+    {#// On envoie une requête Ajax vers le href du lien avec la méthode DELETE#}
+    {#fetch(this.getAttribute("href"), {#}
+    {#method: "DELETE",#}
+    {#headers: {#}
+    {#"X-Requested-With": "XMLHttpRequest",#}
+    {#"Content-Type": "application/json"#}
+    {#},#}
+    {#body: JSON.stringify({"_token": this.dataset.token})#}
+    {#}).then(#}
+    {#// On récupère la réponse en JSON#}
+    {#response => response.json()#}
+    {#).then(data => {#}
+    {#if (data.success)#}
+    {#this.parentElement.remove()#}
+    {#else#}
+    {#alert(data.error)#}
+    {#}).catch(e => alert(e))#}
+    {#}#}
+    {#})#}
+    {#}#}
+    {#}#}
+    {#</script>#}
 {% endblock %}
 

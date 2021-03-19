@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-4">
 
-            <img src="/{{ trickDir }}{{ trick.mainImage.name }}" class="img-fluid"
+            <img src="../{{ trickDir }}{{ trick.mainImage.name }}" class="img-fluid"
                  alt="Image de {{ trick.name }}">
         </div>
         <div class="col">
@@ -23,35 +23,38 @@
             <p> {{ trick.description }}</p>
         </div>
     </div>
-    <div class="row">
-        {% for img in trick.image %}
-            <div class="col-4">
-                <div class="card">
-                    <img src="/{{ trickDir }}{{ img.name }}" class="img-fluid" alt="trick">
-
-                </div>
+    <div class="row mx-auto pt-5 pb-5">
+        {% for img in images %}
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="../{{ trickDir }}{{ img.name }}" alt="Card image cap">
+                {#<div class="card-body">#}
+                {#<h5 class="card-title">Card title</h5>#}
+                {#<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>#}
+                {#<a href="#" class="btn btn-primary">Go somewhere</a>#}
+                {#</div>#}
             </div>
         {% endfor %}
     </div>
-    {#<div class="row mx-auto pt-5 pb-5">#}
-    {#<div class="col-md-8 ml-auto mr-auto">#}
-    {#{% if app.user %}#}
-    {#<div class="brand text-center">#}
-    {#</div>#}
-    {#{% else %}#}
-    {#<div class="brand text-center">#}
-    {#<h5>Réagissez ! Laissez votre commentaire</h5>#}
-    {#<h5>Vous n'êtes pas enregistré.</h5>#}
-    {#<h5>Veuillez vous authentifier ou enregistrez vous si vous n'êtes pas déjà inscrit !</h5>#}
+    <div class="row mx-auto pt-5 pb-5">
+        <div class="col-md-8 ml-auto mr-auto">
+            {% if app.user %}
+                <div class="brand text-center">
+                    <h2>Les commentaires </h2>
+                </div>
+            {% else %}
+                <div class="brand text-center">
+                    <h5>Réagissez ! Laissez votre commentaire</h5>
+                    <h5>Vous n'êtes pas enregistré.</h5>
+                    <h5>Veuillez vous authentifier ou enregistrez vous si vous n'êtes pas déjà inscrit !</h5>
 
-    {#</div>#}
-    {#<div class="col text-center">#}
-    {#<a href="{{ path("security_login") }}" class="btn btn-success">SE CONNECTER</a>#}
-    {#<a href="{{ path("user_registration") }}" class="btn btn-success">S'ENREGISTRER</a>#}
-    {#</div>#}
-    {#{% endif %}#}
+                </div>
+                <div class="col text-center">
+                    <a href="{{ path("security_login") }}" class="btn btn-success">SE CONNECTER</a>
+                    <a href="{{ path("security_registration") }}" class="btn btn-success">S'ENREGISTRER</a>
+                </div>
+            {% endif %}
 
-    {#</div>#}
+        </div>
 
     </div>
 {% endblock %}

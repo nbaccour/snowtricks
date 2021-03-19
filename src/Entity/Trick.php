@@ -49,13 +49,14 @@ class Trick
     /**
      * @ORM\OneToMany(targetEntity=Image::class, mappedBy="trick", orphanRemoval=true, cascade={"persist", "remove"})
      * @Assert\Valid()
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $image;
 
     /**
      * @ORM\OneToOne(targetEntity=Image::class, cascade={"persist", "remove"})
      * @Assert\Valid()
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(nullable=true,onDelete="CASCADE")
      */
     private $mainImage;
 

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Trick;
 use App\Entity\Image;
 use App\Form\TrickType;
+use App\Repository\ImageRepository;
 use App\Repository\TrickRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,23 +15,28 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Security\Core\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class TrickController extends AbstractController
 {
 
 
     protected $trickRepository;
+    protected $imageRepository;
     protected $manager;
     protected $slugger;
 
     public function __construct(
         TrickRepository $trickRepository,
         EntityManagerInterface $manager,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
+        ImageRepository $imageRepository
     ) {
         $this->trickRepository = $trickRepository;
         $this->manager = $manager;
         $this->slugger = $slugger;
+        $this->imageRepository = $imageRepository;
     }
 
 
@@ -42,11 +48,20 @@ class TrickController extends AbstractController
 
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
 
-        return $this->render('trick/show.html.twig', ['trick' => $trick]);
+        $imagesTrick = $this->imageRepository->findByExampleField($trick->getId());
+        $oListImage = [];
+        foreach ($imagesTrick as $key => $value) {
+            if ($value->getId() !== $trick->getMainImage()->getId()) {
+                $oListImage[$key] = $value;
+            }
+        }
+
+        return $this->render('trick/show.html.twig', ['trick' => $trick, 'images' => $oListImage]);
     }
 
     /**
      * @Route("/mytricks", name="trick_mytricks")
+     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos figures")
      */
     public function mytricks()
     {
@@ -68,6 +83,11 @@ class TrickController extends AbstractController
     {
 
         $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute("security_login");
+        }
+
         $return = false;
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -119,6 +139,7 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/createtrick", name="trick_create")
+     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos figures")
      */
     public function create(Request $request, SluggerInterface $slugger)
     {
@@ -138,10 +159,19 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/modifymytrick/{id}", name="trick_modify")
+     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos figures")
      */
     public function modify($id, Request $request)
     {
         $trick = $this->trickRepository->find($id);
+
+        $imagesTrick = $this->imageRepository->findByExampleField($trick->getId());
+        $oListImage = [];
+        foreach ($imagesTrick as $key => $value) {
+            if ($value->getId() !== $trick->getMainImage()->getId()) {
+                $oListImage[$key] = $value;
+            }
+        }
 
         if (!$trick) {
             throw $this->createNotFoundException("La figure $id n'existe pas");
@@ -155,24 +185,40 @@ class TrickController extends AbstractController
         }
 
 
-        return $this->render('/trick/modify.html.twig', ['formView' => $form->createView(), 'trick' => $trick]);
+        return $this->render('/trick/modify.html.twig',
+            ['formView' => $form->createView(), 'trick' => $trick, 'images' => $oListImage]);
 
 
     }
 
     /**
-     * @Route("/deletepicturetrick/{id}", name="trick_delte_picture")
+     * @Route("/deletepicturetrick/{id}", name="trick_delete_picture")
+     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos figures")
      */
-    public function deletePicture()
+    public function deletePicture($id, ImageRepository $imageRepository)
     {
-        dd('delete image');
+
+        $image = $imageRepository->find($id);
+
+        $filesystem = new Filesystem();
+        $filesystem->remove('/uploads/trick/' . $image->getName());
+//        dd($image->getTrick()->getId());
+
+        $this->manager->remove($image);
+        $this->manager->flush();
+
+        $this->addFlash("warning", "L'image a bien été suprimée ");
+
+        return $this->redirectToRoute("trick_modify", ['id' => $image->getTrick()->getId()]);
     }
 
     /**
      * @Route("/deletemytrick/{id}", name="trick_delete", requirements={"id": "\d+"})
+     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos figures")
      */
     public function delete($id)
     {
+
         $trick = $this->trickRepository->find($id);
 
         if (!$trick) {
