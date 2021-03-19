@@ -27,12 +27,6 @@ class HomeController extends AbstractController
 
 
         $tricks = $trickRepository->findBy([], [], 6);
-
-//        foreach ($tricks as $trick) {
-//
-//            $image = $imageRepository->find($trick);
-//            $trick->imageName = $image->getName();
-//        }
         return $this->render("home.html.twig", ['tricks' => $tricks]);
     }
 }

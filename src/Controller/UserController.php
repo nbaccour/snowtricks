@@ -15,11 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Security\Core\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class UserController extends AbstractController
 {
     /**
      * @Route("/profile", name="user_profile")
+     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos données")
      */
     public function profile(Request $request, EntityManagerInterface $manager, SluggerInterface $slugger)
     {
@@ -72,6 +75,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/resetpwd", name="user_resetPassword")
+     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos données")
      */
     public function resetPassword(
         Request $request,
