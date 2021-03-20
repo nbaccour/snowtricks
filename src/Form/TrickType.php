@@ -34,6 +34,12 @@ class TrickType extends AbstractType
                     'class'        => Category::class,
                     'choice_label' => 'name',
                 ])
+//            ->add('video', TextType::class,
+//                [
+//                    'label'    => 'Nom de la Video : (exemple : https://www.youtube.com/embed/V9xuy-rVj9w)',
+//                    'attr'     => ['placeholder' => "Taper l'url de la video"],
+//                    'required' => false,
+//                ])
             ->add('image', FileType::class,
                 [
                     'label'    => 'Ajouter Une à quatre images pour la figure',

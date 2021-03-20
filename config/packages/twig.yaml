@@ -6,6 +6,7 @@ twig:
     categoryRepository: "@App\\Repository\\CategoryRepository"
     trickDir: "uploads/trick/"
     userDir: "uploads/user/"
+    videoDir: "uploads/video/"
 knp_paginator:
   template:
   #    pagination: '@KnpPaginator/Pagination/sliding.html.twig'     # sliding pagination controls template
