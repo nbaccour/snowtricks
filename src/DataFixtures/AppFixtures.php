@@ -7,6 +7,7 @@ use App\Entity\Comment;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\User;
+use App\Entity\Video;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -69,6 +70,14 @@ class AppFixtures extends Fixture
             $aCategory[] = $category;
         }
         $tricksName = ['Mute', 'Indy', '360', '720', 'Backflip', 'Misty', 'Tail slide', 'Method air', 'Backside air'];
+        $videoUrl = [
+            'https://www.youtube.com/embed/V9xuy-rVj9w',
+            'https://www.youtube.com/embed/n0F6hSpxaFc',
+            'https://www.youtube.com/embed/NKHYEOAbFyM',
+            'https://www.youtube.com/embed/1t9Pb39eW3Y',
+            'https://www.youtube.com/embed/NKHYEOAbFyM',
+            'https://www.youtube.com/embed/n0F6hSpxaFc',
+        ];
 
         foreach ($aCategory as $categorie) {
             for ($i = 0; $i <= mt_rand(5, 15); $i++) {
@@ -90,6 +99,14 @@ class AppFixtures extends Fixture
 
                     $manager->persist($image);
                     $aImage[] = $image;
+                }
+                // 3 video by Trick
+                for ($v = 1; $v <= 2; $v++) {
+                    $video = new Video();
+                    $video->setName($faker->randomElement($videoUrl))
+                        ->setTrick($trick);
+
+                    $manager->persist($video);
                 }
 
                 // 10 comment by Trick
