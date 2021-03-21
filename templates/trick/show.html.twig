@@ -36,10 +36,10 @@
     <div class="row mx-auto pt-5 pb-5">
         {% for video in trick.video %}
             {#<div class="card" style="width: 18rem;">#}
-                <iframe width="560" height="315" src="{{ video.name }}" title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen></iframe>
+            <iframe width="560" height="315" src="{{ video.name }}" title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
             {#</div>#}
         {% endfor %}
     </div>
@@ -64,29 +64,30 @@
             {% endif %}
         </div>
         <div class="row mx-auto pt-5 pb-5">
-
-            <div class="brand text-left">
-                <h2>Les commentaires </h2>
-            </div>
-            <div class="well">
-                {% for cmt in comments %}
-                    <div class="media">
-                        <a class="pull-left" href="#">
-                            <img class="media-object" src="../{{ cmt.user.photo }}">
-                        </a>
-                        <div class="media-body">
-                            {#<h4 class="media-heading">Receta 1</h4>#}
-                            <h4 class="text-right">{{ cmt.user.nom }} {{ cmt.user.prenom }}</h4>
-                            <p>{{ cmt.message }}</p>
-                            <ul class="list-inline list-unstyled">
-                                <li>
-                                    <span><i class="glyphicon glyphicon-calendar"></i> {{ cmt.createDate |  date('d/m/Y') }} </span>
-                                </li>
-                            </ul>
+            {% if nbrComments %}
+                <div class="brand text-left">
+                    <h2>Les commentaires </h2>
+                </div>
+                <div class="well">
+                    {% for cmt in comments %}
+                        <div class="media">
+                            <a class="pull-left" href="#">
+                                <img class="media-object" src="../{{ cmt.user.photo }}">
+                            </a>
+                            <div class="media-body">
+                                {#<h4 class="media-heading">Receta 1</h4>#}
+                                <h4 class="text-right">{{ cmt.user.nom }} {{ cmt.user.prenom }}</h4>
+                                <p>{{ cmt.message }}</p>
+                                <ul class="list-inline list-unstyled">
+                                    <li>
+                                        <span><i class="glyphicon glyphicon-calendar"></i> {{ cmt.createDate |  date('d/m/Y') }} </span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
         <div class="pagination pagination-lg">
             {{ knp_pagination_render(comments) }}

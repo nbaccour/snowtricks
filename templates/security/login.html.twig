@@ -3,15 +3,28 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <h1>Connexion : </h1>
-
+    {#<h1>Connexion : </h1>#}
     {% include "shared/_flashSuccess.html.twig" %}
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'messages') }}</div>
     {% endif %}
+    <div class="card border-primary mb-3" style="max-width: 50rem;">
+        <div class="card-header">Mode demo</div>
+        <div class="card-body">
+            <h4 class="card-title">Email : demo@gmail.com</h4>
+            <h4 class="card-title">Mot de passe : demo</h4>
 
-    {{ form_start(formView) }}
-    {{ form_widget(formView) }}
-    <button type="submit" class="btn btn-success">Connexion</button>
-    {{ form_end(formView) }}
+        </div>
+    </div>
+    <div class="card border-primary mb-3" style="max-width: 50rem;">
+        <div class="card-header">Connexion</div>
+        <div class="card-body">
+            {{ form_start(formView) }}
+            {{ form_widget(formView) }}
+            <button type="submit" class="btn btn-success">Connexion</button>
+            {{ form_end(formView) }}
+
+        </div>
+    </div>
+
 {% endblock %}

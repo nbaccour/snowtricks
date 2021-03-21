@@ -7,7 +7,7 @@ twig:
     trickDir: "uploads/trick/"
     userDir: "uploads/user/"
     videoDir: "uploads/video/"
+
 knp_paginator:
   template:
-  #    pagination: '@KnpPaginator/Pagination/sliding.html.twig'     # sliding pagination controls template
-#    pagination: '@App/templates/pagination/sliding.html.twig'
+    pagination: '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig'
