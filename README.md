@@ -42,3 +42,9 @@ Création d'un site communautaire de partage de figures de snowboard via le fram
     php bin/console doctrine:fixtures:load
 ```
 9. Félications le projet est installé correctement, vous pouvez désormais commencer à l'utiliser à votre guise !
+
+Demo : 
+identifiant : demo@gmail.com
+mot de passe : demo 
+
+url site : http://snowtricks.nizarbaccour.fr/
