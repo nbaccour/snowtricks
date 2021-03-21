@@ -11,6 +11,7 @@ use App\Form\TrickType;
 use App\Repository\CommentRepository;
 use App\Repository\ImageRepository;
 use App\Repository\TrickRepository;
+use App\Repository\VideoRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -33,19 +34,22 @@ class TrickController extends AbstractController
     protected $manager;
     protected $slugger;
     protected $commentRepository;
+    protected $videoRepository;
 
     public function __construct(
         TrickRepository $trickRepository,
         EntityManagerInterface $manager,
         SluggerInterface $slugger,
         ImageRepository $imageRepository,
-        CommentRepository $commentRepository
+        CommentRepository $commentRepository,
+        VideoRepository $videoRepository
     ) {
         $this->trickRepository = $trickRepository;
         $this->manager = $manager;
         $this->slugger = $slugger;
         $this->imageRepository = $imageRepository;
         $this->commentRepository = $commentRepository;
+        $this->videoRepository = $videoRepository;
     }
 
 
@@ -94,6 +98,7 @@ class TrickController extends AbstractController
                 'trick'    => $trick,
                 'images'   => $oListImage,
                 'comments' => $commentslist,
+                'nbrComments' => (count($comments)),
                 'formView' => $form->createView(),
             ]);
     }
@@ -127,6 +132,11 @@ class TrickController extends AbstractController
 //        dd($form);
         if ($form->isSubmitted() && $form->isValid()) {
             $trickName = $this->trickRepository->findByName($trick->getName());
+            if (count($form->get('image')->getData()) > 4) {
+                $this->addFlash("warning",
+                    "quatre images maximum pour votre figure");
+                return $this->redirectToRoute("trick_create");
+            }
             if (count($trickName) !== 0) {
                 $this->addFlash("warning",
                     "Veuillez modifier le nom de la figure : '" . $trick->getName() . "' Ce Nom existe déjà dans la base");
@@ -160,6 +170,7 @@ class TrickController extends AbstractController
         }
 
         $return = false;
+
         if ($form->isSubmitted() && $form->isValid()) {
 
             $images = $form->get('image')->getData();
@@ -195,13 +206,14 @@ class TrickController extends AbstractController
                 $this->manager->persist($img);
 
             }
-//            $videoUrl = $form->get('video')->getData();
-//
-//            $video = new Video();
-//            $video->setName($videoUrl)
-//                ->setTrick($trick);
-//
-//            $this->manager->persist($video);
+            $videoUrl = $form->get('video')->getData();
+            if ($videoUrl !== null) {
+                $video = new Video();
+                $video->setName($videoUrl)
+                    ->setTrick($trick);
+                $this->manager->persist($video);
+            }
+
 
             $trick->setSlug($this->slugger->slug($trick->getName()))
                 ->setUser($user);
@@ -227,6 +239,8 @@ class TrickController extends AbstractController
         $trick = $this->trickRepository->find($id);
 
         $imagesTrick = $this->imageRepository->findByTrick($trick->getId());
+        $videosTrick = $this->videoRepository->findByTrick($trick->getId());
+//        dd($videosTrick);
         $oListImage = [];
         foreach ($imagesTrick as $key => $value) {
             if ($value->getId() !== $trick->getMainImage()->getId()) {
@@ -247,7 +261,7 @@ class TrickController extends AbstractController
 
 
         return $this->render('/trick/modify.html.twig',
-            ['formView' => $form->createView(), 'trick' => $trick, 'images' => $oListImage]);
+            ['formView' => $form->createView(), 'trick' => $trick, 'images' => $oListImage, 'videos' => $videosTrick]);
 
 
     }
@@ -256,10 +270,10 @@ class TrickController extends AbstractController
      * @Route("/deletepicturetrick/{id}", name="trick_delete_picture")
      * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos figures")
      */
-    public function deletePicture($id, ImageRepository $imageRepository)
+    public function deletePicture($id)
     {
 
-        $image = $imageRepository->find($id);
+        $image = $this->imageRepository->find($id);
 
         $filesystem = new Filesystem();
         $filesystem->remove('/uploads/trick/' . $image->getName());
@@ -271,6 +285,24 @@ class TrickController extends AbstractController
         $this->addFlash("warning", "L'image a bien été suprimée ");
 
         return $this->redirectToRoute("trick_modify", ['id' => $image->getTrick()->getId()]);
+    }
+
+    /**
+     * @Route("/deletevideotrick/{id}", name="trick_delete_video")
+     * @IsGranted("ROLE_USER", message="Vous devez etres connecté pour acceder à vos figures")
+     */
+    public function deleteVideo($id)
+    {
+
+        $video = $this->videoRepository->find($id);
+
+
+        $this->manager->remove($video);
+        $this->manager->flush();
+
+        $this->addFlash("warning", "La video a bien été suprimée ");
+
+        return $this->redirectToRoute("trick_modify", ['id' => $video->getTrick()->getId()]);
     }
 
     /**

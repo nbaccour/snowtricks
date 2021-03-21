@@ -14,13 +14,26 @@
     {% if app.request.attributes.get('_route') == 'trick_modify' %}
         {#<h2>Images</h2>#}
         <div class="row">
-            {#{% for img in trick.image %}#}
             {% for img in images %}
                 <div class="card" style="width: 18rem;">
                     <img class="card-img-top" src="../{{ trickDir }}{{ img.name }}" alt="Card image cap">
                     <div class="card-body">
                         <h5 class="card-title">{{ img.name }}</h5>
                         <a href="{{ path('trick_delete_picture', {id: img.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            {% for vid in videos %}
+                <div class="card" style="width: 18rem;">
+                    <iframe width="560" height="315" src="{{ vid.name }}" title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    <div class="card-body">
+                        <a href="{{ path('trick_delete_video', {id: vid.id}) }}"
+                           class="btn btn-danger btn-sm">Supprimer</a>
                     </div>
                 </div>
             {% endfor %}

@@ -19,6 +19,20 @@ class VideoRepository extends ServiceEntityRepository
         parent::__construct($registry, Video::class);
     }
 
+    /**
+     * @return Image[] Returns an array of Image objects
+     */
+    public function findByTrick($value)
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.trick = :val')
+            ->setParameter('val', $value)
+            ->orderBy('v.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Video[] Returns an array of Video objects
     //  */

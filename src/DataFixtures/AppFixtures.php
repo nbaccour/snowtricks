@@ -40,7 +40,19 @@ class AppFixtures extends Fixture
 
         $manager->persist($admin);
 
-        $aUser = [];
+        $user = new User();
+        $hash = $this->encoder->encodePassword($user, "demo");
+        $user->setEmail('demo@gmail.com')
+            ->setNom($faker->firstName())
+            ->setPrenom($faker->lastName())
+            ->setPhoto('uploads/user/' . $faker->numberBetween(1,
+                    18) . '.jpg')
+            ->setPassword($hash);
+
+        $manager->persist($user);
+
+        $aUser[] = $user;
+//        $aUser = [];
         for ($u = 0; $u < 10; $u++) {
             $user = new User();
             $hash = $this->encoder->encodePassword($user, "password");
