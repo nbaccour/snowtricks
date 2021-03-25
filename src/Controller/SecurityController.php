@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\User;
+use App\Form\ForgotpasswordType;
 use App\Form\LoginType;
 use App\Form\RegistrationType;
 use App\Repository\UserRepository;
@@ -75,6 +76,8 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig',
             ['formView' => $form->createView(), 'error' => $utils->getLastAuthenticationError('message')]);
     }
+
+
 
     /**
      * @Route("/logout", name="security_logout")

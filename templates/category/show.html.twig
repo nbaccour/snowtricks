@@ -12,12 +12,14 @@
         {% for trick in tricks %}
             <div class="col-4">
                 <div class="card">
-                    <img src="../{{ trickDir }}{{ trick.mainImage.name }}" class="img-fluid" alt="trick">
+                    <img style="width:350px; height: 220px;" src="../{{ trickDir }}{{ trick.mainImage.name }}"
+                         class="img-fluid" alt="trick">
 
-                    <div class="card-body">
+                    <div class="card-body pb-5">
                         <h4 class="card-title">{{ trick.name }}</h4>
                         <span class="badge badge-info">{{ trick.category.name }}</span>
-                        <p class="card-text">{{ trick.description }}</p>
+                        <p class="card-text"
+                           style="height: 120px;">{{ trick.description|length > 200 ? trick.description|slice(0, 200) ~ '...' : trick.description }}</p>
                         <a href="{{ path('trick_show', {'category_slug':trick.category.slug, 'slug':trick.slug}) }}"
                            class="btn btn-primary btn-sm">Détails</a>
                     </div>

@@ -60,7 +60,6 @@ class TrickController extends AbstractController
     {
         $user = $this->getUser();
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
-//        dd($trick);
         $imagesTrick = $this->imageRepository->findByTrick($trick->getId());
         $oListImage = [];
         foreach ($imagesTrick as $key => $value) {
@@ -90,16 +89,16 @@ class TrickController extends AbstractController
         $commentslist = $paginator->paginate(
             $comments, // Requête contenant les données à paginer (ici nos articles)
             $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            6 // Nombre de résultats par page
+            10 // Nombre de résultats par page
         );
 
         return $this->render('trick/show.html.twig',
             [
-                'trick'    => $trick,
-                'images'   => $oListImage,
-                'comments' => $commentslist,
+                'trick'       => $trick,
+                'images'      => $oListImage,
+                'comments'    => $commentslist,
                 'nbrComments' => (count($comments)),
-                'formView' => $form->createView(),
+                'formView'    => $form->createView(),
             ]);
     }
 
@@ -111,7 +110,6 @@ class TrickController extends AbstractController
     {
 
         $user = $this->getUser();
-//        dd($user->getTrick());
         return $this->render('/user/mytricks.html.twig', ['tricks' => $user->getTrick()]);
 
 
@@ -128,8 +126,6 @@ class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class, $trick);
 
         $form->handleRequest($request);
-//        dump($trick);
-//        dd($form);
         if ($form->isSubmitted() && $form->isValid()) {
             $trickName = $this->trickRepository->findByName($trick->getName());
             if (count($form->get('image')->getData()) > 4) {
@@ -180,7 +176,6 @@ class TrickController extends AbstractController
                 $safeFilename = $this->slugger->slug($originalFilename);
 
                 $bddFilename = $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
-//                $pathFilename = 'uploads/trick/' . $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
                 $pathFilename = 'uploads/trick/' . $bddFilename;
 
                 try {
@@ -240,7 +235,6 @@ class TrickController extends AbstractController
 
         $imagesTrick = $this->imageRepository->findByTrick($trick->getId());
         $videosTrick = $this->videoRepository->findByTrick($trick->getId());
-//        dd($videosTrick);
         $oListImage = [];
         foreach ($imagesTrick as $key => $value) {
             if ($value->getId() !== $trick->getMainImage()->getId()) {
@@ -277,7 +271,6 @@ class TrickController extends AbstractController
 
         $filesystem = new Filesystem();
         $filesystem->remove('/uploads/trick/' . $image->getName());
-//        dd($image->getTrick()->getId());
 
         $this->manager->remove($image);
         $this->manager->flush();

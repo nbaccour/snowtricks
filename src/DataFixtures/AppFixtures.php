@@ -52,7 +52,6 @@ class AppFixtures extends Fixture
         $manager->persist($user);
 
         $aUser[] = $user;
-//        $aUser = [];
         for ($u = 0; $u < 10; $u++) {
             $user = new User();
             $hash = $this->encoder->encodePassword($user, "password");
@@ -96,7 +95,7 @@ class AppFixtures extends Fixture
 
                 $trick = new Trick();
                 $trick->setName($faker->randomElement($tricksName))
-                    ->setDescription($faker->paragraph(5))
+                    ->setDescription($faker->paragraph(10))
                     ->setSlug(strtolower($this->slugger->slug($trick->getName())))
                     ->setUser($faker->randomElement($aUser))
                     ->setCategory($categorie);
@@ -105,15 +104,14 @@ class AppFixtures extends Fixture
                 // 4 Image by Trick
                 for ($k = 1; $k <= 4; $k++) {
                     $image = new Image();
-//                    $image->setName('uploads/trick/img' . $faker->numberBetween(1, 39))
                     $image->setName('img' . $faker->numberBetween(1, 39) . '.jpg')
                         ->setTrick($trick);
 
                     $manager->persist($image);
                     $aImage[] = $image;
                 }
-                // 3 video by Trick
-                for ($v = 1; $v <= 2; $v++) {
+                // 1 video by Trick
+                for ($v = 1; $v <= 1; $v++) {
                     $video = new Video();
                     $video->setName($faker->randomElement($videoUrl))
                         ->setTrick($trick);
@@ -121,8 +119,8 @@ class AppFixtures extends Fixture
                     $manager->persist($video);
                 }
 
-                // 10 comment by Trick
-                for ($c = 1; $c <= mt_rand(7, 15); $c++) {
+                // entre 11 et 15 comment by Trick
+                for ($c = 1; $c <= mt_rand(11, 15); $c++) {
                     $comment = new Comment();
                     $comment->setMessage($faker->paragraph(5))
                         ->setTrick($trick)
