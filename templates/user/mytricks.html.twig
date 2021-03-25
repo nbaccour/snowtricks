@@ -10,18 +10,18 @@
         <li class="breadcrumb-item active">Mes Figures</li>
     </ol>
     <h1>Mes Figures : </h1>
-    {#<div class="row">#}
-    {#<a href="{{ path('trick_create') }}" class="btn btn-success">Ajouter une Figure</a>#}
-    {#</div>#}
     <div class="row">
         {% for trick in tricks %}
             <div class="col-3">
                 <div class="card">
-                    <img src="{{ trickDir }}{{ trick.mainImage.name }}" class="img-fluid" alt="trick">
+                    <img style="width:253px; height: 150px;" src="{{ trickDir }}{{ trick.mainImage.name }}"
+                         class="img-fluid"
+                         alt="trick">
                     <div class="card-body">
                         <h4 class="card-title">{{ trick.name }}</h4>
                         <span class="badge badge-info">{{ trick.category.name }}</span>
-                        <p class="card-text">{{ trick.description }}</p>
+                        <p class="card-text"
+                           style="height: 200px;">{{ trick.description|length > 200 ? trick.description|slice(0, 200) ~ '...' : trick.description }}</p>
                         <a href="{{ path('trick_show', {'category_slug':trick.category.slug, 'slug':trick.slug}) }}"
                            class="btn btn-primary btn-sm">Détails</a>
                         <a href="{{ path('trick_modify', {'id':trick.id}) }}"

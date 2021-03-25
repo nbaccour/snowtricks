@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 
+use App\Entity\User;
+use App\Form\ForgotpwdType;
 use App\Form\PictureType;
 use App\Form\ProfileType;
 use App\Form\ResetPasswordType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -100,5 +103,38 @@ class UserController extends AbstractController
         return $this->render("/user/profile.html.twig",
             ['formProfilView' => $formPicture->createView(), 'user' => $user, 'formPassword' => $form->createView()]);
 
+    }
+
+    /**
+     * @Route("/forgotpassword", name="user_forgotpassword")
+     */
+    public function forgotpassword(Request $request, UserRepository $userRepository)
+    {
+
+
+        $form = $this->createForm(ForgotpwdType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $emailUser = $userRepository->findByEmail($form->getData()['email']);
+
+            if (count($emailUser) === 0) {
+
+                $this->addFlash("warning",
+                    "Erreur : Email n'existe pas dans notre base: '" . $form->getData()['email'] . "' ");
+                return $this->redirectToRoute("user_forgotpassword");
+            } else {
+
+                $this->addFlash("success",
+                    "Merci pour l'intérêt que vous portez à SnowTricks !
+                Le site est en version de démonstration, l'action que vous souhaitez effectuer n'est pas activée");
+                return $this->redirectToRoute("user_forgotpassword");
+            }
+
+        }
+
+        return $this->render('security/forgotpassword.html.twig',
+            ['formView' => $form->createView()]);
     }
 }

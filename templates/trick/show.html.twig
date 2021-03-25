@@ -11,8 +11,8 @@
                     href="{{ path('category_show',{'slug':trick.category.slug}) }}">{{ trick.category.name }}</a></li>
         <li class="breadcrumb-item active">{{ trick.name }}</li>
     </ol>
-    <h1>{{ trick.name }}</h1>
-    <div class="row">
+    <h1>Figure : {{ trick.name }}</h1>
+    <div class="row  pb-5">
         <div class="col-4">
 
             <img src="../{{ trickDir }}{{ trick.mainImage.name }}" class="img-fluid"
@@ -23,26 +23,46 @@
             <p> {{ trick.description }}</p>
         </div>
     </div>
-    <h4>Les Figures : </h4>
-    <div class="row mx-auto pt-5 pb-5">
+    <h4>Les images : </h4>
+    <div class="row pb-5">
         {% for img in images %}
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="../{{ trickDir }}{{ img.name }}" alt="Card image cap">
-
+            <div class="col-4">
+                <div class="card">
+                    <img style="width:350px; height: 200px;" src="../{{ trickDir }}{{ img.name }}"
+                         class="img-fluid" alt="trick">
+                </div>
             </div>
         {% endfor %}
     </div>
+
     <h4>Les Videos :</h4>
-    <div class="row mx-auto pt-5 pb-5">
+    <div class="row">
         {% for video in trick.video %}
-            {#<div class="card" style="width: 18rem;">#}
-            <iframe width="560" height="315" src="{{ video.name }}" title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
-            {#</div>#}
+            <div class="col-4">
+                <div class="card">
+                    <iframe width="350" height="200" src="{{ video.name }}" title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+
+                    {#<img style="width:350px; height: 200px;" src="../{{ trickDir }}{{ img.name }}"#}
+                    {#class="img-fluid" alt="trick">#}
+                </div>
+            </div>
         {% endfor %}
     </div>
+
+    {#<div class="row mx-auto pt-5 pb-5">#}
+    {#{% for video in trick.video %}#}
+    {#<div class="card" style="width: 18rem;">#}
+    {#<iframe width="560" height="315" src="{{ video.name }}" title="YouTube video player"#}
+    {#frameborder="0"#}
+    {#allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"#}
+    {#allowfullscreen></iframe>#}
+    {#</div>#}
+    {#{% endfor %}#}
+    {#</div>#}
+
     <div class="row mx-auto pt-5 pb-5">
         <div class="col-md-8 ml-auto mr-auto">
             {% if app.user %}
