@@ -61,6 +61,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Trick::class, mappedBy="user")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $trick;
 

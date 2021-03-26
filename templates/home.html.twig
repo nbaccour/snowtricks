@@ -9,8 +9,8 @@
         <h1>SnowTricks</h1>
         <p>LA COMMUNAUTÉ POUR DÉCOUVRIR LE SNOWBOARD ET SES FIGURES</p>
     </div>
-    <h2>Top Tricks</h2>
-    <div class="row">
+    <h2>Nos figures</h2>
+    <div class="row pb-5">
 
         {% for trick in tricks %}
             <div class="col-4">
@@ -25,9 +25,14 @@
                            style="height: 120px;">{{ trick.description|length > 200 ? trick.description|slice(0, 200) ~ '...' : trick.description }}</p>
                         <a href="{{ path('trick_show', {'category_slug':trick.category.slug, 'slug':trick.slug}) }}"
                            class="btn btn-primary btn-sm">Détails</a>
+
                     </div>
                 </div>
             </div>
         {% endfor %}
+    </div>
+
+    <div class="pagination pagination-lg">
+        {{ knp_pagination_render(tricks) }}
     </div>
 {% endblock %}
