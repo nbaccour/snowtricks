@@ -60,23 +60,5 @@ class Image
         return $this;
     }
 
-//-----------------------------
-//
-//    public function getUploadDir()
-//    {
-//        // Upload directory
-//        return 'uploads/trick/';
-//        // This means /web/uploads/documents/
-//    }
-
-//    protected function getUploadRootDir()
-//    {
-//        // On retourne le chemin relatif vers l'image pour notre code PHP
-//        // Image location (PHP)
-//        return __DIR__ . '/../../../../public/' . $this->getUploadDir();
-//    }
-
-
-//-----------------------------
 
 }

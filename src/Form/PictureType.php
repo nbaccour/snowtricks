@@ -17,7 +17,7 @@ class PictureType extends AbstractType
                 [
                     'label'       => 'Photo',
                     'mapped'      => false,
-                    'required'    => false,
+                    'required'    => true,
                     'attr'        => ['placeholder' => 'Votre photo'],
                     'constraints' => new File([
                         'maxSize'          => '1024k',

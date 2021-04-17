@@ -3,7 +3,6 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    {#<h1>Connexion : </h1>#}
     {% include "shared/_flashSuccess.html.twig" %}
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'messages') }}</div>
