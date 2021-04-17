@@ -43,20 +43,6 @@
             {% endfor %}
         </div>
 
-        {#<div class="row">#}
-        {#{% for vid in videos %}#}
-        {#<div class="card" style="width: 18rem;">#}
-        {#<iframe width="560" height="315" src="{{ vid.name }}" title="YouTube video player"#}
-        {#frameborder="0"#}
-        {#allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"#}
-        {#allowfullscreen></iframe>#}
-        {#<div class="card-body">#}
-        {#<a href="{{ path('trick_delete_video', {id: vid.id}) }}"#}
-        {#class="btn btn-danger btn-sm">Supprimer</a>#}
-        {#</div>#}
-        {#</div>#}
-        {#{% endfor %}#}
-        {#</div>#}
     {% endif %}
     <button type="submit" class="btn btn-success">Modifier les données de la figure</button>
     {{ form_end(formView) }}

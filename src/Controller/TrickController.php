@@ -128,6 +128,12 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $trickName = $this->trickRepository->findByName($trick->getName());
+
+            if (count($form->get('image')->getData()) === 0) {
+                $this->addFlash("warning",
+                    "Veuillez choisir une image pour votre figure");
+                return $this->redirectToRoute("trick_create");
+            }
             if (count($form->get('image')->getData()) > 4) {
                 $this->addFlash("warning",
                     "quatre images maximum pour votre figure");
@@ -247,7 +253,14 @@ class TrickController extends AbstractController
         }
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
-
+        if ($form->isSubmitted() && $form->isValid()) {
+            $trickName = $this->trickRepository->findByName($trick->getName());
+            if (count($trickName) !== 0) {
+                $this->addFlash("warning",
+                    "Veuillez modifier le nom de la figure : '" . $trick->getName() . "' Ce Nom existe déjà dans la base");
+                return $this->redirectToRoute("trick_modify", ['id' => $trick->getId()]);
+            }
+        }
         $modify = $this->createOrUpdate($form, $trick, 'modify');
         if ($modify === true) {
             return $this->redirectToRoute("trick_mytricks");

@@ -52,7 +52,6 @@ class SecurityController extends AbstractController
 
             $manager->persist($user);
             $manager->flush();
-//message : Compte crée avec succès ! Veuillez valider votre compte via le mail qui vous a été envoyé pour pouvoir vous connecter !
             $this->addFlash(
                 'success',
                 "Compte crée avec succès ! "

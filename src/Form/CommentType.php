@@ -19,9 +19,6 @@ class CommentType extends AbstractType
                     'attr'     => ['placeholder' => 'Contenu de votre commentaire ...'],
                     'required' => true,
                 ])
-//            ->add('createDate')
-//            ->add('user')
-//            ->add('trick')
         ;
     }
 

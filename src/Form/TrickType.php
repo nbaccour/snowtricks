@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Length;
 
 class TrickType extends AbstractType
 {
@@ -23,11 +24,23 @@ class TrickType extends AbstractType
         $builder
             ->add('name', TextType::class,
                 [
-                    'label'    => 'Nom de la Figure',
-                    'attr'     => ['placeholder' => 'Taper le nom de la figure'],
-                    'required' => false,
+                    'label'       => 'Nom de la Figure',
+                    'attr'        => ['placeholder' => 'Taper le nom de la figure'],
+                    'constraints' => new Length([
+                        'min'        => '3',
+                        'max'        => '255',
+                        'minMessage' => 'Nom de la figure Invalide',
+                    ]),
                 ])
-            ->add('description', TextareaType::class, ['required' => false])
+            ->add('description', TextareaType::class, [
+                'label'       => 'Description de la Figure',
+                'attr'        => ['placeholder' => 'Taper la description de la figure'],
+                'constraints' => new Length([
+                    'min'        => '3',
+                    'max'        => '255',
+                    'minMessage' => 'Description Invalide',
+                ]),
+            ])
             ->add('category', EntityType::class,
                 [
                     'placeholder'  => '-- choisir une catégorie --',
@@ -46,7 +59,7 @@ class TrickType extends AbstractType
                     'label'    => 'Ajouter Une à quatre images pour la figure',
                     'multiple' => true,
                     'mapped'   => false,
-                    'required' => false,
+                    'required'   => false,
                 ]);
 
     }
