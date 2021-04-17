@@ -238,7 +238,7 @@ class TrickController extends AbstractController
     public function modify($id, Request $request)
     {
         $trick = $this->trickRepository->find($id);
-
+        $imageName = $trick->getName();
         $imagesTrick = $this->imageRepository->findByTrick($trick->getId());
         $videosTrick = $this->videoRepository->findByTrick($trick->getId());
         $oListImage = [];
@@ -254,8 +254,9 @@ class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
             $trickName = $this->trickRepository->findByName($trick->getName());
-            if (count($trickName) !== 0) {
+            if (count($trickName) !== 0 && $trick->getName() !== $imageName) {
                 $this->addFlash("warning",
                     "Veuillez modifier le nom de la figure : '" . $trick->getName() . "' Ce Nom existe déjà dans la base");
                 return $this->redirectToRoute("trick_modify", ['id' => $trick->getId()]);

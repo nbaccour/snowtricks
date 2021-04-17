@@ -37,7 +37,6 @@ class TrickType extends AbstractType
                 'attr'        => ['placeholder' => 'Taper la description de la figure'],
                 'constraints' => new Length([
                     'min'        => '3',
-                    'max'        => '255',
                     'minMessage' => 'Description Invalide',
                 ]),
             ])
@@ -59,7 +58,7 @@ class TrickType extends AbstractType
                     'label'    => 'Ajouter Une à quatre images pour la figure',
                     'multiple' => true,
                     'mapped'   => false,
-                    'required'   => false,
+                    'required' => false,
                 ]);
 
     }
