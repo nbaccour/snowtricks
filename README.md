@@ -25,7 +25,7 @@ Création d'un site communautaire de partage de figures de snowboard via le fram
 ```
     npm install
 ```
-5. Créer un build d'assets (grâce à Webpack Encore) avec [Npm](https://www.npmjs.com/get-npm) :
+5. Créer un build d'assets avec [Npm](https://www.npmjs.com/get-npm) :
 ```
     npm run build
 ```
